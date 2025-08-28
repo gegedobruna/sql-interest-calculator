@@ -7,6 +7,7 @@ Developed during my internship at **ASEE by Asseco** as part of a banking system
 This project provides reusable SQL utilities to calculate financial interest between two dates with flexible parameters.  
 It is designed for banking and financial use cases, but the logic is generic enough to apply in other domains.
 
+
 ## 🚀 Features
 - Multiple interest calculation methods:
   - Proporc. (Proportional)
@@ -19,40 +20,46 @@ It is designed for banking and financial use cases, but the logic is generic eno
 - Returns precise decimal values with rounding
 - Centralized stored procedure (`sp_CalcInterest`) to call any method
 
-## ⚙️ Parameters
 
-The main stored procedure:
+## ⚙️ Installation (simple)
+1) Open your target database in SSMS (or any SQL client).  
+2) Open `sql/procedures/sp_CalcInterest.sql`.  
+3) Run it.  
+That’s it — the procedure is now available as `dbo.sp_CalcInterest` in the **current** database.
+
+## ▶️ Run Examples
+Open and execute `scripts/examples.sql` in the same database.  
+Example:
 
 ```sql
+
 EXEC dbo.sp_CalcInterest
-    @Method   = 'compound',      -- method name (string)
-    @Date1    = '2023-12-01',    -- start date
-    @Date2    = '2033-12-01',    -- end date
-    @Shuma    = 300000,          -- principal amount
-    @RateP    = 11,              -- interest rate (percent)
-    @Anticip  = 0;               -- anticipation flag (0 or 1)
+  @Method = 'ACT/ACT',
+  @StartDate = '2023-01-01',
+  @EndDate   = '2023-12-31',
+  @Principal = 10000,
+  @RatePct   = 5,
+  @IsAnticipative = 0;
+
 ```
 
-### Arguments
-- `@Method` → interest calculation method (see list above)
-- `@Date1` → starting date
-- `@Date2` → ending date
-- `@Shuma` → principal amount (decimal)
-- `@RateP` → interest rate as a percentage (decimal)
-- `@Anticip` → anticipation mode (bit, default 0)
+## 📤 Output Columns
+- **Normal**:
 
-## 📊 Example Output
-| Data Prej | Data Deri   | Ditet | Norma | Metoda   | Shuma (Vlera fillestare) | Interesi (normal) | Gjendja e re |
-|-----------|------------|-------|-------|----------|---------------------------|-------------------|--------------|
-| 2023-07-15 | 2027-12-12 | 1611  | 3.00  | proporc  | 10000.00                  | 1323.29           | 11323.29     |
+| Start Date | End Date   | Days | Rate % | Method  | Principal (initial) | Interest (normal) | New Balance |
+|------------|------------|------|--------|---------|----------------------|-------------------|-------------|
+| 2023-01-01 | 2023-12-31 | 364  | 5.00   | ACT/365 | 10000.00             | 498.63            | 10498.63    |
 
-## 🛠️ Structure
-- `fn_*` → calculation functions (one per method)
-- `sp_CalcInterest` → stored procedure wrapper that selects the right function
-- `test_scripts.sql` → example executions and validations
+
+- **Anticipative**: 
+
+| Start Date | End Date   | Days | Rate % | Method  | Principal (final) | Principal (anticip) | Interest (anticip) |
+|------------|------------|------|--------|---------|-------------------|---------------------|--------------------|
+| 2023-07-01 | 2023-08-15 | 44   | 11.00  | 30/360  | 250000.00         | 239103.45           | 10896.55           |
+
 
 ## 📚 Notes
-- This repository was created as part of my **internship at ASEE / Asseco**.  
+- This repository was created as part of my **internship at ASEE by Asseco**.  
 - It is intended for educational/demo purposes and may not reflect production-grade financial software.  
 
 ---
