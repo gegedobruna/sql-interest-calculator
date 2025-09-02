@@ -8,7 +8,7 @@
        6: 30/365-6     (aka Proporc. 30/365-6)
        7: COMPOUND     (aka Konformne)
 */
-
+-- Example using the stored procedure
 EXEC dbo.sp_CalcInterest
   @Method = '2',                    -- METHOD ID (1...7) OR NAME ('Proporc', '30/360', 'Compound' ...)
   @StartDate  = '2010-06-14',       -- 'YYYY-MM-DD'
@@ -17,3 +17,13 @@ EXEC dbo.sp_CalcInterest
   @RatePct  = 13,                   -- DECIMAL
   @isAnticipative = 0;              -- 0 (default), 1
 
+-- Example using the table-valued function
+SELECT *
+FROM dbo.fn_CalcInterest(
+  '2',                -- METHOD ID or NAME
+  '2010-06-14',       -- Start Date
+  '2030-05-01',       -- End Date
+  200000,             -- Principal
+  13,                 -- Rate %
+  0                   -- IsAnticipative (0 or 1)
+);
